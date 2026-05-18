@@ -108,7 +108,7 @@ const StudentLoginSection: React.FC<Props> = ({
         <button
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-1/2 -translate-y-1/2"
+          className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
         >
           {showPassword ? <FaEyeSlash /> : <FaEye />}
         </button>
@@ -117,7 +117,7 @@ const StudentLoginSection: React.FC<Props> = ({
       {/* Login Button */}
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-800"
+        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 cursor-pointer transition-all"
       >
         Log In
       </button>

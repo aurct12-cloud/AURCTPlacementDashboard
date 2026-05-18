@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -129,7 +129,7 @@ function App() {
           </Route>
 
           {/* Auth */}
-          <Route path="/" element={<PublicRoute element={<LoginPage />} />} />
+          <Route path="/" element={<PublicRoute element={<Navigate to='/auth' />} />} />
           <Route path="/auth" element={<PublicRoute element={<LoginPage />} />} />
           <Route path="/auth/reset-password" element={<PublicRoute element={<PasswordResetPage />} />} />
 

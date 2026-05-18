@@ -51,7 +51,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-dvh flex items-center justify-center p-4"
+      className="flex items-center justify-center p-4 min-h-screen overflow-hidden"
       style={{
         backgroundImage:
           'url("https://ugcounselor-content.s3.ap-south-1.amazonaws.com/wp-content/uploads/2024/10/28193100/Anna-University-Regional-Campus-Tirunelveli.jpg")',
@@ -61,7 +61,7 @@ const LoginPage: React.FC = () => {
       }}
     >
 
-      {/* 🔥 Login Card */}
+
       <div className="z-10 w-full max-w-md bg-white/95 rounded-3xl shadow-2xl p-8 border border-white/40">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -79,29 +79,37 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex bg-gray-100 rounded-full p-1 mb-6">
-          <button
-            onClick={() => setTab("student")}
-            className={`flex-1 py-2 rounded-full text-sm font-semibold transition ${
-              tab === "student"
-                ? "bg-blue-600 text-white shadow-md"
-                : "text-gray-600"
-            }`}
-          >
-            Student
-          </button>
+        <div className="relative flex bg-gray-100 rounded-full p-1 mb-6 overflow-hidden">
+  
+        {/* Animated Background */}
+        <div
+          className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full bg-blue-600 shadow-md transition-all duration-300 ease-in-out ${
+            tab === "student" ? "left-1" : "left-1/2"
+          }`}
+        />
 
-          <button
-            onClick={() => setTab("faculty")}
-            className={`flex-1 py-2 rounded-full text-sm font-semibold transition ${
-              tab === "faculty"
-                ? "bg-blue-600 text-white shadow-md"
-                : "text-gray-600"
-            }`}
-          >
-            Faculty
-          </button>
-        </div>
+        <button
+          onClick={() => setTab("student")}
+          className={`relative z-10 flex-1 py-2 rounded-full text-sm font-semibold transition-colors duration-300 cursor-pointer ${
+            tab === "student"
+              ? "text-white"
+              : "text-gray-600"
+          }`}
+        >
+          Student
+        </button>
+
+        <button
+          onClick={() => setTab("faculty")}
+          className={`relative z-10 flex-1 py-2 rounded-full text-sm font-semibold transition-colors duration-300 cursor-pointer ${
+            tab === "faculty"
+              ? "text-white"
+              : "text-gray-600"
+          }`}
+        >
+          Faculty
+        </button>
+      </div>
 
         {tab === "student" ? (
           <StudentLoginSection
@@ -118,7 +126,6 @@ const LoginPage: React.FC = () => {
         )}
       </div>
 
-      {/* 🔥 Fail Toast */}
       <FailToast
         key={`fail-${toastKey}`}
         title={toastData.title}
@@ -127,7 +134,6 @@ const LoginPage: React.FC = () => {
         onClose={() => setShowFailToast(false)}
       />
 
-      {/* 🔥 Success Toast */}
       <SuccessToast
         key={`success-${toastKey}`}
         title={toastData.title}
