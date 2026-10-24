@@ -1,11 +1,47 @@
-import nodemailer from "nodemailer";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import dotenv from "dotenv";
+import fs from 'fs';
+import nodemailer from 'nodemailer';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+export const sendOtpEmail = async (userName, email, no, role, otp) => {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+        }
+    });
+
+    const htmlPath = path.join(__dirname, './emailTemplates/otpTemplate.html');
+    let htmlContent = fs.readFileSync(htmlPath, 'utf-8');
+
+    const currentDate = new Date();
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    const formattedDate = currentDate.toLocaleDateString('en-GB', options);
+
+    htmlContent = htmlContent
+        .replace('{{name}}', userName)
+        .replace('{{date}}', formattedDate)
+        .replace('{{otp}}', otp)
+        .replace('{{no}}', role === 'STUDENT'? no: '+91 '+no)
+        .replace('{{year}}', new Date().getFullYear());
+
+    await transporter.sendMail({
+        from: process.env.EMAIL,
+        to: email,
+        subject: 'Your OTP for Password Reset',
+        html: htmlContent
+    });
+    return { success: true };
+}
+
+
+
+import dotenv from "dotenv";
+
 
 dotenv.config({ path: path.join(__dirname, "..", "..", ".env") });
 
@@ -67,47 +103,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-export const sendOtpEmail = async ({ to, name, registerNo, otp }) => {
-  try {
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-    const placeholders = {
-      date: formattedDate,
-      name,
-      registerNo,
-      otp,
-      year: new Date().getFullYear(),
-    };
 
-    let finalHtml = otpTemplateHtml;
-    for (const key in placeholders) {
-      finalHtml = finalHtml.replace(`{{${key}}}`, placeholders[key]);
-    }
-
-    const mailOptions = {
-      from: `"Placement Portal" <${process.env.EMAIL_USER}>`,
-      to,
-      subject: "Your OTP for Placement Portal",
-      html: finalHtml,
-    };
-    const info = await transporter.sendMail(mailOptions);
-    console.log("OTP email sent:", info.messageId);
-    return {
-      success: true,
-      messageId: info.messageId,
-    };
-  } catch (error) {
-    console.error("Error sending OTP email:", error.message);
-    return {
-      success: false,
-      error: error.message,
-    };
-  }
-};
 
 export const sendPasswordResetEmail = async ({
   to,

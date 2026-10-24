@@ -105,7 +105,7 @@ const NotFoundPage = () => {
                 stiffness: 300,
               }}
               className="group flex items-center gap-2 px-7 py-3 rounded-2xl bg-blue-600 text-white font-semibold shadow-xl shadow-blue-300/40 hover:bg-blue-700 transition-all duration-300 cursor-pointer"
-              onClick={() => (window.location.href = "/auth")}
+              onClick={() => (window.location.href = "/")}
             >
               <ArrowLeft
                 size={18}

@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { authService } from "../service/auth.service";
+import { AuthService } from "../service/auth.service";
 import VerifyingUserLoading from "../components/loadingComponent/loginPageLoading/VerifyingUserLoading";
 
 interface ProtectedRouteProps {
@@ -24,7 +24,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
       }
 
       try {
-        const res = await authService.verifyToken();
+        const res = await AuthService.verifyToken();
         setIsValid(true);
         setUserRole(res.data.data.role);
       } catch {

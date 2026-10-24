@@ -29,120 +29,120 @@ const LoginPage: React.FC = () => {
     }, [searchParams]);
 
 
-  const [showFailToast, setShowFailToast] = useState(false);
-  const [showSuccessToast, setShowSuccessToast] = useState(false);
-  const [toastKey, setToastKey] = useState(0);
-  const [toastData, setToastData] = useState<ToastDataType>({
-    title: "",
-    message: "",
-  });
+    const [showFailToast, setShowFailToast] = useState(false);
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
+    const [toastKey, setToastKey] = useState(0);
+    const [toastData, setToastData] = useState<ToastDataType>({
+        title: "",
+        message: "",
+    });
 
-  const triggerFailToast = (title: string, message: string) => {
-    setToastData({ title, message });
-    setToastKey((k) => k + 1);
-    setShowFailToast(true);
-  };
+    const triggerFailToast = (title: string, message: string) => {
+        setToastData({ title, message });
+        setToastKey((k) => k + 1);
+        setShowFailToast(true);
+    };
 
-  const triggerSuccessToast = (title: string, message: string) => {
-    setToastData({ title, message });
-    setToastKey((k) => k + 1);
-    setShowSuccessToast(true);
-  };
+    const triggerSuccessToast = (title: string, message: string) => {
+        setToastData({ title, message });
+        setToastKey((k) => k + 1);
+        setShowSuccessToast(true);
+    };
 
-  return (
-    <div
-      className="flex items-center justify-center p-4 min-h-screen overflow-hidden"
-      style={{
-        backgroundImage:
-          'url("https://ugcounselor-content.s3.ap-south-1.amazonaws.com/wp-content/uploads/2024/10/28193100/Anna-University-Regional-Campus-Tirunelveli.jpg")',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+    return (
+        <div
+        className="flex items-center justify-center p-4 min-h-screen overflow-hidden"
+        style={{
+            backgroundImage:
+            'url("https://ugcounselor-content.s3.ap-south-1.amazonaws.com/wp-content/uploads/2024/10/28193100/Anna-University-Regional-Campus-Tirunelveli.jpg")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+        }}
+        >
 
 
-      <div className="z-10 w-full max-w-md bg-white/95 rounded-3xl shadow-2xl p-8 border border-white/40">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <img
-            src={collegeLogo}
-            alt="logo"
-            className="w-20 h-20 mx-auto rounded-full shadow-md mb-4 border-2 border-white"
-          />
-          <h1 className="text-xl font-bold text-gray-800">
-            Anna University - Tirunelveli
-          </h1>
-          <p className="text-sm text-gray-600">
-            Training & Placement Portal
-          </p>
+        <div className="z-10 w-full max-w-md bg-white/95 rounded-3xl shadow-2xl p-8 border border-white/40">
+            {/* Logo */}
+            <div className="text-center mb-8">
+            <img
+                src={collegeLogo}
+                alt="logo"
+                className="w-20 h-20 mx-auto rounded-full shadow-md mb-4 border-2 border-white"
+            />
+            <h1 className="text-xl font-bold text-gray-800">
+                Anna University - Tirunelveli
+            </h1>
+            <p className="text-sm text-gray-600">
+                Training & Placement Portal
+            </p>
+            </div>
+
+            {/* Tabs */}
+            <div className="relative flex bg-gray-100 rounded-full p-1 mb-6 overflow-hidden">
+    
+            {/* Animated Background */}
+            <div
+            className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full bg-blue-600 shadow-md transition-all duration-300 ease-in-out ${
+                tab === "student" ? "left-1" : "left-1/2"
+            }`}
+            />
+
+            <button
+            onClick={() => setTab("student")}
+            className={`relative z-10 flex-1 py-2 rounded-full text-sm font-semibold transition-colors duration-300 cursor-pointer ${
+                tab === "student"
+                ? "text-white"
+                : "text-gray-600"
+            }`}
+            >
+            Student
+            </button>
+
+            <button
+            onClick={() => setTab("faculty")}
+            className={`relative z-10 flex-1 py-2 rounded-full text-sm font-semibold transition-colors duration-300 cursor-pointer ${
+                tab === "faculty"
+                ? "text-white"
+                : "text-gray-600"
+            }`}
+            >
+            Faculty
+            </button>
         </div>
 
-        {/* Tabs */}
-        <div className="relative flex bg-gray-100 rounded-full p-1 mb-6 overflow-hidden">
-  
-        {/* Animated Background */}
-        <div
-          className={`absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full bg-blue-600 shadow-md transition-all duration-300 ease-in-out ${
-            tab === "student" ? "left-1" : "left-1/2"
-          }`}
+            {tab === "student" ? (
+            <StudentLoginSection
+                onFail={triggerFailToast}
+                onSuccess={triggerSuccessToast}
+                redirectPath={redirectPath}
+            />
+            ) : (
+            <FacultyLoginSection 
+                onFail={triggerFailToast} 
+                onSuccess={triggerSuccessToast}
+                redirectPath={redirectPath} 
+            />
+            )}
+        </div>
+
+        <FailToast
+            key={`fail-${toastKey}`}
+            title={toastData.title}
+            message={toastData.message}
+            show={showFailToast}
+            onClose={() => setShowFailToast(false)}
         />
 
-        <button
-          onClick={() => setTab("student")}
-          className={`relative z-10 flex-1 py-2 rounded-full text-sm font-semibold transition-colors duration-300 cursor-pointer ${
-            tab === "student"
-              ? "text-white"
-              : "text-gray-600"
-          }`}
-        >
-          Student
-        </button>
-
-        <button
-          onClick={() => setTab("faculty")}
-          className={`relative z-10 flex-1 py-2 rounded-full text-sm font-semibold transition-colors duration-300 cursor-pointer ${
-            tab === "faculty"
-              ? "text-white"
-              : "text-gray-600"
-          }`}
-        >
-          Faculty
-        </button>
-      </div>
-
-        {tab === "student" ? (
-          <StudentLoginSection
-            onFail={triggerFailToast}
-            onSuccess={triggerSuccessToast}
-            redirectPath={redirectPath}
-          />
-        ) : (
-          <FacultyLoginSection 
-            onFail={triggerFailToast} 
-            onSuccess={triggerSuccessToast}
-            redirectPath={redirectPath} 
-          />
-        )}
-      </div>
-
-      <FailToast
-        key={`fail-${toastKey}`}
-        title={toastData.title}
-        message={toastData.message}
-        show={showFailToast}
-        onClose={() => setShowFailToast(false)}
-      />
-
-      <SuccessToast
-        key={`success-${toastKey}`}
-        title={toastData.title}
-        message={toastData.message}
-        show={showSuccessToast}
-        onClose={() => setShowSuccessToast(false)}
-      />
-    </div>
-  );
+        <SuccessToast
+            key={`success-${toastKey}`}
+            title={toastData.title}
+            message={toastData.message}
+            show={showSuccessToast}
+            onClose={() => setShowSuccessToast(false)}
+        />
+        </div>
+    );
 };
 
 export default LoginPage;

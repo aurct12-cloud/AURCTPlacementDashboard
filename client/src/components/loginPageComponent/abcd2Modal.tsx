@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { authService } from "../../service/auth.service";
+import { AuthService } from "../../service/auth.service";
 import ResetLinkLoading from "../loadingComponent/loginPageLoading/ResetLinkLoading";
 import VerifyOtpLoading from "../loadingComponent/loginPageLoading/VerifyOtpLoading";
 
@@ -12,13 +12,13 @@ type Props = {
 
 type Step = "email" | "otp" | "password";
 
-const StudentResetPassword: React.FC<Props> = ({
+const FacultyResetPassword: React.FC<Props> = ({
   onClose,
   onSuccess,
 }) => {
   const [step, setStep] = useState<Step>("email");
 
-  const [registerNo, setRegisterNo] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
 
@@ -32,8 +32,13 @@ const StudentResetPassword: React.FC<Props> = ({
 
   // Request OTP
   const handleRequestOtp = async () => {
-    if (!registerNo.trim()) {
-      setError("Please enter your register number");
+    if (!mobileNo.trim()) {
+      setError("Please enter your mobile number");
+      return;
+    }
+
+    if (mobileNo.trim().length !== 10) {
+      setError("Please enter a valid 10-digit mobile number");
       return;
     }
 
@@ -41,9 +46,9 @@ const StudentResetPassword: React.FC<Props> = ({
       setLoading(true);
       setError("");
 
-      const response = await authService.requestPasswordReset({
-        registerNo: registerNo.trim(),
-        role: "STUDENT",
+      const response = await AuthService.requestPasswordReset({
+        mobileNo: mobileNo.trim(),
+        role: "FACULTY",
       });
 
       if (response.data.status === "SUCCESS") {
@@ -81,9 +86,9 @@ const StudentResetPassword: React.FC<Props> = ({
       setLoading(true);
       setError("");
 
-      const response = await authService.verifyOtp({
-        registerNo: registerNo.trim(),
-        role: "STUDENT",
+      const response = await AuthService.verifyOtp({
+        mobileNo: mobileNo.trim(),
+        role: "FACULTY",
         otp: otp.trim(),
       });
 
@@ -126,7 +131,7 @@ const StudentResetPassword: React.FC<Props> = ({
       setLoading(true);
       setError("");
 
-      const response = await authService.resetPassword(password);
+      const response = await AuthService.resetPassword(password);
 
       if (response.data.status === "SUCCESS") {
         onSuccess(
@@ -160,8 +165,6 @@ const StudentResetPassword: React.FC<Props> = ({
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-md rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden"
       >
-
-
         <div className="p-7">
           {/* Close Button */}
           <button
@@ -178,7 +181,7 @@ const StudentResetPassword: React.FC<Props> = ({
             </h2>
 
             <p className="text-sm text-gray-500 mt-2">
-              Secure your student account
+              Secure your faculty account
             </p>
           </div>
 
@@ -186,15 +189,19 @@ const StudentResetPassword: React.FC<Props> = ({
           {step === "email" && (
             <>
               <p className="text-sm mb-5 text-gray-500 text-center">
-                Enter your register number to receive OTP
+                Enter your mobile number to receive OTP
               </p>
 
               <input
-                type="text"
-                placeholder="Register Number"
-                value={registerNo}
+                type="tel"
+                placeholder="Mobile Number"
+                value={mobileNo}
                 onChange={(e) => {
-                  setRegisterNo(e.target.value);
+                  const val = e.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 10);
+
+                  setMobileNo(val);
                   setError("");
                 }}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300"
@@ -399,4 +406,4 @@ const StudentResetPassword: React.FC<Props> = ({
   );
 };
 
-export default StudentResetPassword;
+export default FacultyResetPassword;

@@ -404,7 +404,7 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { authService } from '../../service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { studentApi } from '../../api/studentApi';
 import VerifyingUserLoading from '../../components/loadingComponent/loginPageLoading/VerifyingUserLoading';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -489,7 +489,7 @@ const FacultyHomePage: React.FC = () => {
   });
 
   useEffect(() => {
-    const details = authService.getUserDetails();
+    const details = AuthService.getUserDetails();
     if (details.userId) setFacultyDetails(details as FacultyDetails);
     fetchLeaderboard();
   }, []);

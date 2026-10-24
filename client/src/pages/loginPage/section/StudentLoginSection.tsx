@@ -3,86 +3,94 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { isValidRegisterNo } from "../../../utils/validation";
-import { authService } from "../../../service/auth.service";
+import { AuthService } from "../../../service/auth.service";
 import LoginLoading from "../../../components/loadingComponent/loginPageLoading/LoginLoading";
-import StudentResetPassword from "../../../components/loginPageComponent/StudentResetPassword";
+import PasswordResetHandler from "../../../components/loginPageComponent/PasswordResetHandler";
 
 type Props = {
-  onFail: (title: string, message: string) => void;
-  onSuccess: (title: string, message: string) => void;
-  redirectPath: string;
+    onFail: (title: string, message: string) => void;
+    onSuccess: (title: string, message: string) => void;
+    redirectPath: string;
 };
 
 const StudentLoginSection: React.FC<Props> = ({
-  onFail,
-  onSuccess,
-  redirectPath,
+    onFail,
+    onSuccess,
+    redirectPath,
 }) => {
-  const navigate = useNavigate();
 
-  const [registerNo, setRegisterNo] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginLoading, setLoginLoading] = useState(false);
-  const [showResetPassword, setShowResetPassword] = useState(false);
+    const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+    const [registerNo, setRegisterNo] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [loginLoading, setLoginLoading] = useState(false);
+    const [showResetPassword, setShowResetPassword] = useState(false);
 
-    const regNo = registerNo.trim();
-    const pwd = password.trim();
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-    if (!isValidRegisterNo(regNo)) {
-      onFail("Login Failed", "Enter a valid register number.");
-      return;
-    }
+        const regNo = registerNo.trim();
+        const pwd = password.trim();
 
-    if (!pwd) {
-      onFail("Login Failed", "Enter your password.");
-      return;
-    }
+        if (!isValidRegisterNo(regNo)) {
+            onFail("Login Failed", "Enter a valid register number.");
+            return;
+        }
 
-    try {
-      setLoginLoading(true);
+        if (!pwd) {
+            onFail("Login Failed", "Enter your password.");
+            return;
+        }
 
-      const response = await authService.login({
-        registerNo: regNo,
-        password: pwd,
-        role: "STUDENT",
-      });
+        try {
+            setLoginLoading(true);
 
-      if (
-        response.status === 200 &&
-        response.data.status === "SUCCESS"
-      ) {
-        // Auth service now handles storing all user data
-        window.dispatchEvent(new Event("userUpdated"));
+            const response = await AuthService.login({
+                registerNo: regNo,
+                password: pwd,
+                role: "STUDENT",
+            });
 
-        // Navigate to student dashboard
-        navigate("/student");
-      } else {
-        onFail(
-          "Login Failed",
-          response.data.message || "Invalid credentials"
-        );
-      }
-    } catch (err: any) {
-      console.error(err);
+            if (response.status === 200 && response.data.status === "SUCCESS") {
+                const data = response.data.data;
+                localStorage.setItem("Token", data.token);
+                localStorage.setItem("userId", data.userId);
+                localStorage.setItem("userName", data.userName);
+                localStorage.setItem("role", data.role);
+                localStorage.setItem("registerNo", data.registerNo || "");
+                localStorage.setItem("mobileNo", data.mobileNo || "");
+                localStorage.setItem("email", data.email || "");
+                localStorage.setItem("department", data.department || "");
+        
+                // Save user's theme preference
+                localStorage.setItem("userThemePreference", data.theme || "light");
+                // window.dispatchEvent(new Event("userUpdated"));
 
-      if (err.response?.status === 401) {
-        onFail("Invalid Credentials", "Check register number or password");
-      } else if (err.response) {
-        onFail(
-          "Login Failed",
-          err.response.data?.message || "Server error"
-        );
-      } else {
-        onFail("Network Error", "Server not reachable");
-      }
-    } finally {
-      setLoginLoading(false);
-    }
-  };
+                navigate("/student");
+            }
+            else {
+                onFail("Login Failed", response.data.message || "Invalid credentials");
+            }
+        }
+        catch (err: any) {
+            console.error(err);
+
+            if (err.response?.status === 401) {
+                onFail("Invalid Credentials", "Check register number or password");
+            } else if (err.response) {
+                onFail(
+                "Login Failed",
+                err.response.data?.message || "Server error"
+                );
+            } else {
+                onFail("Network Error", "Server not reachable");
+            }
+        }
+        finally {
+            setLoginLoading(false);
+        }
+    };
 
   return (
     <form onSubmit={handleLogin} className="space-y-5">
@@ -136,9 +144,11 @@ const StudentLoginSection: React.FC<Props> = ({
       {loginLoading && <LoginLoading />}
 
       {showResetPassword && (
-        <StudentResetPassword
+        <PasswordResetHandler
+          role={"STUDENT"}
           onClose={() => setShowResetPassword(false)}
           onSuccess={onSuccess}
+          onFail={onFail}
         />
       )}
     </form>

@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     registerNo: {
       type: String,
       unique: true,
-      sparse: true, // allows null for ADMIN
+      sparse: true, // allows null for ADMIN and FACULTY
     },
     mobileNo: {
       type: String,
@@ -46,31 +46,7 @@ const userSchema = new mongoose.Schema(
     },
     profilePicture: {
       type: String,
-      default: "",
-    },
-    // Profile picture stored as base64 in MongoDB
-    profilePictureData: {
-      type: String,
-      default: null,
-    },
-    profilePictureContentType: {
-      type: String,
-      default: null,
-    },
-    // Password reset OTP fields
-    resetOtp: {
-      type: String,
-      default: null,
-    },
-    resetOtpExpires: {
-      type: Date,
-      default: null,
-    },
-    theme: {
-      type: String,
-      enum: ["light", "dark"],
-      default: "light",
-    },
+    }
   },
   { timestamps: true }
 );

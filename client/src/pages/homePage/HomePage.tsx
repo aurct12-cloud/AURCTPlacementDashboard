@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../../service/auth.service';
+import { AuthService } from '../../service/auth.service';
 import { studentApi } from '../../api/studentApi';
 import { placementInterviewApi, type PlacementInterviewData } from '../../api/placementInterviewApi';
 import VerifyingUserLoading from '../../components/loadingComponent/loginPageLoading/VerifyingUserLoading';
@@ -52,7 +52,7 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const details = authService.getUserDetails();
+    const details = AuthService.getUserDetails();
     
     if (details.userId) {
       setUserDetails(details as UserDetails);

@@ -1,6 +1,6 @@
 import { useEffect, useState, type JSX } from 'react';
 import { Navigate } from 'react-router-dom';
-import { authService } from '../service/auth.service';
+import { AuthService } from '../service/auth.service';
 import VerifyingUserLoading from '../components/loadingComponent/loginPageLoading/VerifyingUserLoading';
 
 const PublicRoute = ({ element }: { element: JSX.Element }) => {
@@ -18,7 +18,7 @@ const PublicRoute = ({ element }: { element: JSX.Element }) => {
             }
 
             try {
-                await authService.verifyToken();
+                await AuthService.verifyToken();
                 setIsAuthenticated(true);
             } catch (err) {
                 // Token invalid, clear storage
